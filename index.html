@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Si usamos module, no es necesario usar defer -->
+    <script src="./JS/scripts.js" type="module" ></script>
+    <link rel="stylesheet" href="./CSS/estilos.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+
+        <img src="./Images/logoSuperHero.png" alt="logoPagina">
+        
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="./personajes.html">Personajes</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h1>Crud Heroes</h1>
+        </section>
+        <fieldset>
+            <section class="seccion-formulario">
+                <h2>Informacion del Super Heroe</h2>
+                <form>
+                    <p>
+                        <label for="txtNombre">Nombre:</label>
+                        <br>
+                        <input type="text" name="txtNombre" placeholder="Ingrese nombre" autocomplete="off">
+                        <br>
+    
+                    </p>
+                    <p>
+                        <label for="txtAlias">Alias</label>
+                        <br>
+                        <input type="text" name="txtAlias" placeholder="Ingrese alter-ego" autocomplete="off">
+                        <br>
+                    </p>
+                    <p>
+                        <label for="rdoEditorial">Editorial:</label>
+                        <br>
+                        <!-- Cheked es para que aparezca por defecto -->
+                        <input type="radio" name="rdoEditorial" value="marvel" checked>
+                        <br>
+                        <input type="radio" name="rdoEditorial" value="dc">
+                    </p>
+                    <p>
+                        <label for="ranFuerza">Fuerza:</label>
+                        <br>
+                        <input type="range" name="ranFuerza" min="0" max="50" value="10">
+                        <br>
+                        <!-- <input type="reset" name="" id=""> -->
+                    </p>
+                    <p>
+                        <label for="sltArma">Arma:</label>
+                        <br>
+                        <select name="sltArma" id="slt-Armas">
+                            <option value=""></option>
+                        </select>
+                        <br>
+                    </p>
+                    <p>
+                        <input type="submit" value="Guardar">
+                        <!-- <input type="button" value="Eliminar persona"> -->
+                        <input type="hidden" name="txtId">
+                    </p>
+                </form>
+    
+            </section>
+
+        </fieldset>
+        <section class="seccion-tabla">
+            <h2>Lista de super Heroes</h2>
+            <div id="tabla"></div>
+        </section>
+
+    </main>
+    <footer>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Personajes</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contacto</a></li>
+
+            <h3>Laboratorio III - Todos los derechos reservados &copy;</h3>
+        </ul>
+
+    </footer>
+    
+</body>
+</html>
