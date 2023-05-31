@@ -114,8 +114,13 @@ function cargarFormularioSuperHeroe(formualrio,superheroe){
     formualrio.ranFuerza.value = superheroe.fuerza;
     formualrio.sltArma.value = superheroe.arma;
 }
+
+
 function cargarSpinner()
 {
     const $main = document.getElementById("main");
-    const $img = document.createElement("img");
+    const $img = document.createElement("video");
+    $img.src = ".\\Images\\1kxh.gif"
+    
+    $main.appendChild($img);
 }
