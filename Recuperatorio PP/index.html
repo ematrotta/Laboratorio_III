@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="Persona.js"></script>
-    <script src="Empleado.js"></script>
-    <script src="Cliente.js"></script>
+    <script src="Heroe.js"></script>
+    <script src="Villano.js"></script>
     <script src="TablaController.js"></script>
     <script src="Scripts.js"></script>
     <title>ABM Empleados</title>
@@ -16,7 +16,7 @@
             <h2>Form Datos</h2>
             <div>
                 <label for="selectType">Filtrar por:</label>
-                <select name="SeleccionarTipo" id="selectType">
+                <select name="SeleccionarTipo" id="selectType1" class="select-type">
                     <option value="todos" selected>Todos</option>
                 </select>
 
@@ -25,9 +25,9 @@
             <div>
                 <label for="calcularEdadPromedio">Calcular Edad Promedio:</label>
                 <input type="text" id="calcularEdadPromedio">
-                <button>Calcular</button>
+                <button id="btnCalcularEdad">Calcular</button>
             </div>
-            <div>
+            <div id="filterColumn">
                 <h3>Mostrar Columnas</h3>
                 <label for="columnId">Id</label>
                 <input type="checkbox" id="columnId" checked>
@@ -37,14 +37,18 @@
                 <input type="checkbox" id="columnApellido" checked>
                 <label for="columnEdad">Edad</label>
                 <input type="checkbox" id="columnEdad" checked>
-                <label for="columnVentas">Ventas</label>
-                <input type="checkbox" id="columnVentas" checked>
-                <label for="columnSueldo">Sueldo</label>
-                <input type="checkbox" id="columnSueldo" checked>
-                <label for="columnTelefono">Teléfono</label>
-                <input type="checkbox" id="columnTelefono" checked>
-                <label for="columnCompras">Compras</label>
-                <input type="checkbox" id="columnCompras" checked>
+                <label for="columnAlterEgo">AlterEgo</label>
+                <input type="checkbox" id="columnAlterEgo" checked>
+                <label for="columnCiudad">Ciudad</label>
+                <input type="checkbox" id="columnCiudad" checked>
+                <label for="columnPublicado">Publicado</label>
+                <input type="checkbox" id="columnPublicado" checked>
+                <label for="columnEnemigo">Enemigo</label>
+                <input type="checkbox" id="columnEnemigo" checked>
+                <label for="columnRobos">Robos</label>
+                <input type="checkbox" id="columnRobos" checked>
+                <label for="columnAsesinatos">Asesinatos</label>
+                <input type="checkbox" id="columnAsesinatos" checked>
             </div>
 
             <table id="tablaFrmPrincipal">
@@ -52,7 +56,7 @@
             <button id="appendNew">Agregar</button>
         </form>
 
-        <form id="frmABM">
+        <form id="frmABM" style="display: none;">
             <h2>Formulario ABM</h2>
             <div>
                 <label for="inputId">Id:</label>
@@ -60,7 +64,10 @@
             </div>
             <div>
                 <label for="selectType">Seleccionar Tipo:</label>
-                <select name="SeleccionarTipo" id="selectType"></select>
+                <select name="SeleccionarTipo" id="selectType2" class="select-type"></select>
+            </div>
+            <div id="fielsOfTypeDiv">
+
             </div>
 
             <div>
