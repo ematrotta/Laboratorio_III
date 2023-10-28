@@ -47,21 +47,18 @@ document.addEventListener("DOMContentLoaded",function(){
     const botonCalcular = $("btnCalcularEdad");
     botonCalcular.addEventListener("click",(e)=>{
         e.preventDefault();
-        let sumaEdades = 0;
-        let objetosFiltrados = arrayObjetos; // Inicialmente, se usa la lista completa
     
-        seleccionarTipo.addEventListener("change", () => {
-            if (seleccionarTipo.value !== "todos") {
-                objetosFiltrados = arrayObjetos.filter((e) => {
-                    return e.constructor.name === seleccionarTipo.value;
-                });
-            }
+        let objetosFiltrados = [];
+        if (seleccionarTipo.value !== "todos") {
+            objetosFiltrados = arrayObjetos.filter((objeto) => objeto.constructor.name === seleccionarTipo.value);
+        } else {
+            objetosFiltrados = arrayObjetos;
+        }
     
-            sumaEdades = objetosFiltrados.reduce((suma, objeto) => suma + objeto.edad, 0);
+        let sumaEdades = objetosFiltrados.reduce((suma, objeto) => suma + objeto.edad, 0);
     
-            const txtCalculadorEdad = $("calcularEdadPromedio");
-            txtCalculadorEdad.value = sumaEdades / objetosFiltrados.length;
-        });
+        let txtCalculadorEdad = $("calcularEdadPromedio");
+        txtCalculadorEdad.value = sumaEdades / objetosFiltrados.length;
         
     })
 
@@ -69,7 +66,6 @@ document.addEventListener("DOMContentLoaded",function(){
     const formularioABM = $("frmABM");
 
     // Rellenar Selects:
-
     let arrayTipos = [];
     arrayObjetos.forEach((obj)=>{
 
