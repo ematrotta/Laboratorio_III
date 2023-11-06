@@ -8,7 +8,10 @@
     <script src="Terrestre.js"></script>
     <script src="ArrayHelpers.js"></script>
     <script src="TablaFrmPrincipal.js"></script>
+    <script src="FrmPrincipal.js"></script>
+    <script src="FrmABM.js"></script>
     <script src="scripts.js"></script>
+        <link rel="stylesheet" href="styles.css">
     <title>Primer Parcial</title>
 </head>
 <body>
@@ -36,19 +39,15 @@
     <section>
         <form id="frmABM">
             <h2>Form ABM</h2>
-            <div>
-                <label for="txtIdVehiculo" id="lblIdVehiculo">ID: </label>
-                <input type="text" id="txtIdVehiculo" readonly>
-                <label for="txtModelo" id="lblModelo">Modelo: </label>
-                <input type="text" id="txtModelo">
-                <label for="txtAnioFabricacion" id="lblAnioFabricacion">Año de Fabricación: </label>
-                <input type="text" id="txtAnioFabricacion">
-                <label for="txtVelocidadMaxima" id="lblVelocidadMaxima">Velocidad Máxima: </label>
-                <input type="text" id="txtVelocidadMaxima">
-                <label for="txtAutonomia" id="lblAutonomia">Autonomía: </label>
-                <input type="text" id="txtAutonomia">
-            </div>
-            <div>
+            <div id="camposVehiculo">
+                <label for="txt-id" id="lbl-id">ID: </label>
+                <input type="text" id="txt-id" readonly>
+                <label for="txt-modelo" id="lbl-modelo">Modelo: </label>
+                <input type="text" id="txt-modelo">
+                <label for="txt-anoFab" id="lbl-anoFav">Año de Fabricación: </label>
+                <input type="text" id="txt-anoFab">
+                <label for="txt-velMax" id="lbl-velMax">Velocidad Máxima: </label>
+                <input type="text" id="txt-velMax">
                 <label for="selecionarTipofrmABM">Tipo:</label>
                 <select name="selecionarTipofrmABM" id="selecionarTipofrmABM">
                     <option value="todos" selected>Todos</option>
@@ -64,6 +63,8 @@
             </div>
         </form>
     </section>
+
+
     
 </body>
 </html>

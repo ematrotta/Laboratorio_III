@@ -14,10 +14,15 @@ function ObtenerArrayAtributos(arrObjetos){
 
 function OrdenarObjetos(arrObj,tipoOrdenamiento){
     arrayObjetosOrdenado = arrObj.sort((a,b)=>{
+
+        if (a === undefined && b === undefined) return 0; // son iguales
+        if (a === undefined) return -1; // a va al principio
+        if (b === undefined) return 1;
+
         if(a[tipoOrdenamiento] > b[tipoOrdenamiento]){
             return 1;
         }
-        if(a[tipoOrdenamiento] = b[tipoOrdenamiento]){
+        if(a[tipoOrdenamiento] == b[tipoOrdenamiento]){
             return 0;
         }
         if(a[tipoOrdenamiento] < b[tipoOrdenamiento]){

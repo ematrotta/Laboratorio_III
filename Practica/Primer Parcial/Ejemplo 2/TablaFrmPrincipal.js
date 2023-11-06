@@ -31,7 +31,7 @@ function GenerarCuerpo(arrData,arrEncabezados,tabla){
             nuevaCelda.textContent = obj[e];
             filaNueva.appendChild(nuevaCelda);
         });
-        filaNueva.addEventListener("click",()=>{
+        filaNueva.addEventListener("dblclick",()=>{
             const eventoCargarFormularioABM = new CustomEvent('cargarFormABM',{detail:filaNueva.id});
             document.dispatchEvent(eventoCargarFormularioABM);
         })
