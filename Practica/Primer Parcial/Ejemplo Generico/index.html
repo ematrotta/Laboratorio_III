@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="scripts.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>Primer Parcial</title>
+</head>
+<body>
+
+    <section>
+        <form id="frmPrincipal">
+            <h2>Form Datos</h2>
+            <div>
+                <label for="selecionarTipofrmPrincipal">Filtrar por:</label>
+                <select name="selecionarTipofrmPrincipal" id="selecionarTipofrmPrincipal">
+                    <option value="todos" selected>Todos</option>
+                </select>
+            </div>
+            <div>
+                <label for="txtPromedioVelocidadMaxima" id="lblPromedioVelocidadMaxima">Promedio Velocidad Máxima</label>
+                <input type="text" id="txtPromedioVelocidadMaxima" readonly>
+                <button id="btnCalcularVelocidadMaxima">Calcular</button>
+            </div>
+            <div id="filtrosDeColumnas">
+            </div>
+            <table id="tablaPrincipal"></table>
+            <button id="btnAgregar">Agregar</button>
+        </form>
+    </section>
+    <section>
+        <form id="frmABM">
+            <h2>Form ABM</h2>
+            <div id="camposVehiculo">
+                <label for="txt-id" id="lbl-id">ID: </label>
+                <input type="text" id="txt-id" readonly>
+                <label for="txt-modelo" id="lbl-modelo">Modelo: </label>
+                <input type="text" id="txt-modelo">
+                <label for="txt-anoFab" id="lbl-anoFav">Año de Fabricación: </label>
+                <input type="text" id="txt-anoFab">
+                <label for="txt-velMax" id="lbl-velMax">Velocidad Máxima: </label>
+                <input type="text" id="txt-velMax">
+                <label for="selecionarTipofrmABM">Tipo:</label>
+                <select name="selecionarTipofrmABM" id="selecionarTipofrmABM">
+                    <option value="todos" selected>Todos</option>
+                </select>
+            </div>
+            <div id="camposSegunTipo">
+            </div>
+            <div id="botonesABM">
+                <button id="btnAgregarNuevo">Agregar</button>
+                <button id="btnModificarRegistro">Modificar</button>
+                <button id="btnEliminarRegistro">Eliminar</button>
+                <button id="btnCancelarRegistro">Cancelar</button>
+            </div>
+        </form>
+    </section>
+
+
+    
+</body>
+</html>
