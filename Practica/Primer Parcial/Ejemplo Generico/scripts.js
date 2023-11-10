@@ -1,10 +1,12 @@
-import { ObtenerElementoPorId } from "./Complementos/ComplementedScripts.js";
+import { EliminarElementos, ObtenerElementoPorId } from "./Complementos/ComplementedScripts.js";
 import {ActualizarTablaPricipal} from "./DOM/TablaPrincipal.js";
 import {Terrestre} from "./Entidades/Terrestre.js";
 import {Aereo} from "./Entidades/Aereo.js";
 import {Vehiculo} from "./Entidades/Vehiculo.js";
 import { InicializarFormularioPrincipal } from "./DOM/FrmPrincipal.js";
-import { CalcularPorPropiedad, FiltrarObjetos, ObtenerArrayPropiedades } from "./Complementos/ArrayHelpers.js";
+import { CalcularPorPropiedad, FiltrarObjetos, ObtenerArrayConstructores, ObtenerArrayPropiedades } from "./Complementos/ArrayHelpers.js";
+import { CrearOpcionesSelectABM,InicializarFrmABM} from "./DOM/FrmABM.js";
+
 
 Storage.prototype.getObjects = function(key){
     return (JSON.parse(this.getItem(key)));
@@ -37,8 +39,11 @@ document.addEventListener("DOMContentLoaded",function(){
     let propiedades = ObtenerArrayPropiedades(ObtenerVehiculos(keyLocalStorage));
     let objetosFiltrados = ObtenerVehiculos(keyLocalStorage);
     let botonCalcular = ObtenerElementoPorId("btnCalcularVelocidadMaxima");
+    let botonAgregar = ObtenerElementoPorId("btnAgregar");
 
     InicializarFormularioPrincipal(propiedades,objetosFiltrados);
+    InicializarFrmABM();
+    CrearOpcionesSelectABM(ObtenerArrayConstructores(objetosFiltrados));
 
     document.addEventListener("OcultarColumna",(e)=>{
         const checks = ObtenerElementoPorId("filtrosDeColumnas").children;
@@ -86,6 +91,37 @@ document.addEventListener("DOMContentLoaded",function(){
         const txtCalcular = ObtenerElementoPorId("txtPromedioVelocidadMaxima");
         txtCalcular.value = parseFloat(resultado/objetosFiltrados.length).toFixed(2);
     });
+
+    document.addEventListener("SeleccionarTipoABM",(e)=>{
+        const valorSeleccionado = e.detail;
+        if(valorSeleccionado !== "todos"){
+            const vehiculos = ObtenerVehiculos(keyLocalStorage);
+            const tipoVehiculoSelecionado = vehiculos.find((vehiculo)=>vehiculo.constructor.name.toLowerCase() === valorSeleccionado);
+            const camposVehiculoPorTipo = ObtenerElementoPorId("camposSegunTipo").children;
+            for(let i = 0;i<camposVehiculoPorTipo.length;i++){
+                let propiedad = camposVehiculoPorTipo[i].id.split("-")[1];
+                if(tipoVehiculoSelecionado.hasOwnProperty(propiedad)){
+                    camposVehiculoPorTipo[i].classList.remove("none-visible");
+                }
+                else{
+                    if(!camposVehiculoPorTipo[i].classList.contains("none-visible")){
+                        camposVehiculoPorTipo[i].classList.add("none-visible");
+                    }
+
+                }
+            }
+        }
+    })
+
+    botonAgregar.addEventListener("click",(e)=>{
+        e.preventDefault();
+        const frmABM = ObtenerElementoPorId("frmABM");
+        const frmPrincipal = ObtenerElementoPorId("frmPrincipal");
+        InicializarFrmABM();
+        frmABM.classList.remove("none-visible");
+        frmPrincipal.classList.add("none-visible");
+        
+    })
 
 
     // let objArrFiltrado = [...ObtenerVehiculos()];
