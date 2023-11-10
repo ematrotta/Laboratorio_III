@@ -1,7 +1,12 @@
-import { $,EliminarElementos, ObtenerElementoPorId,LetraCapital} from "../Complementos/ComplementedScripts.js";
+import { $,ObtenerElementoPorId,LetraCapital} from "../Complementos/ComplementedScripts.js";
 
 export function InicializarFrmABM(){
     const formularioABM = ObtenerElementoPorId("frmABM");
+    const selectABM = ObtenerElementoPorId("selecionarTipofrmABM");
+    selectABM.value = "todos";
+    selectABM.selected = true;
+    selectABM.disabled = false;
+
     if(!formularioABM.classList.contains("none-visible")){
         formularioABM.classList.add("none-visible");
     }
