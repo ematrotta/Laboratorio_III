@@ -1,4 +1,4 @@
-import { EliminarElementos, ObtenerElementoPorId } from "./Complementos/ComplementedScripts.js";
+import { AsignarId, ObtenerElementoPorId } from "./Complementos/ComplementedScripts.js";
 import {ActualizarTablaPricipal} from "./DOM/TablaPrincipal.js";
 import {Terrestre} from "./Entidades/Terrestre.js";
 import {Aereo} from "./Entidades/Aereo.js";
@@ -7,6 +7,14 @@ import { InicializarFormularioPrincipal } from "./DOM/FrmPrincipal.js";
 import { CalcularPorPropiedad, FiltrarObjetos, ObtenerArrayConstructores, ObtenerArrayPropiedades } from "./Complementos/ArrayHelpers.js";
 import { CrearOpcionesSelectABM,InicializarFrmABM} from "./DOM/FrmABM.js";
 
+// [
+//     {"id":14, "modelo":"Ferrari F100", "anoFab":1998, "velMax":400, "cantPue":2, "cantRue":4},
+//     {"id":51, "modelo":"Dodge Viper", "anoFab":1991, "velMax":266, "cantPue":2, "cantRue":4},
+//     {"id":67, "modelo":"Boeing CH-47 Chinook", "anoFab":1962, "velMax":302, "altMax":6, "autonomia":1200},
+//     {"id":666, "modelo":"Aprilia RSV 1000 R", "anoFab":2004, "velMax":280, "cantPue":0, "cantRue":2},
+//     {"id":872, "modelo":"Boeing 747-400", "anoFab":1989, "velMax":988, "altMax":13, "autonomia":13450},
+//     {"id":742, "modelo":"Cessna CH-1 SkyhookR", "anoFab":1953, "velMax":174, "altMax":3, "autonomia":870}
+// ]
 
 Storage.prototype.getObjects = function(key){
     return (JSON.parse(this.getItem(key)));
@@ -44,6 +52,8 @@ document.addEventListener("DOMContentLoaded",function(){
     let botonAgregar = ObtenerElementoPorId("btnAgregar");
     let botonCancelarABM = ObtenerElementoPorId("btnCancelarRegistro");
     let botonEliminarABM = ObtenerElementoPorId("btnEliminarRegistro");
+    let botonModificarABM = ObtenerElementoPorId("btnModificarRegistro");
+    let botonAgregarABM = ObtenerElementoPorId("btnAgregarNuevo");
 
     InicializarFormularioPrincipal(propiedades,objetosFiltrados);
     InicializarFrmABM();
@@ -86,21 +96,21 @@ document.addEventListener("DOMContentLoaded",function(){
 
     document.addEventListener("SeleccionarTipoABM",(e)=>{
         const valorSeleccionado = e.detail;
-        if(valorSeleccionado !== "todos"){
-            const vehiculos = ObtenerVehiculos(keyLocalStorage);
-            const tipoVehiculoSelecionado = vehiculos.find((vehiculo)=>vehiculo.constructor.name.toLowerCase() === valorSeleccionado);
-            const camposVehiculoPorTipo = ObtenerElementoPorId("camposSegunTipo").children;
-            for(let i = 0;i<camposVehiculoPorTipo.length;i++){
-                let propiedad = camposVehiculoPorTipo[i].id.split("-")[1];
-                if(tipoVehiculoSelecionado.hasOwnProperty(propiedad)){
-                    camposVehiculoPorTipo[i].classList.remove("none-visible");
-                }
-                else{
-                    if(!camposVehiculoPorTipo[i].classList.contains("none-visible")){
-                        camposVehiculoPorTipo[i].classList.add("none-visible");
-                    }
+        const camposVehiculoPorTipo = ObtenerElementoPorId("camposSegunTipo").children;
 
+        const vehiculos = ObtenerVehiculos(keyLocalStorage);
+        const tipoVehiculoSelecionado = vehiculos.find((vehiculo)=>vehiculo.constructor.name.toLowerCase() === valorSeleccionado);
+        for(let i = 0;i<camposVehiculoPorTipo.length;i++){
+            let propiedad = camposVehiculoPorTipo[i].id.split("-")[1];
+            // Realizamos la siguiente validacion por si es que no existen objetos con ese constructor
+            if(tipoVehiculoSelecionado !== undefined && tipoVehiculoSelecionado.hasOwnProperty(propiedad)){
+                camposVehiculoPorTipo[i].classList.remove("none-visible");
+            }
+            else{
+                if(!camposVehiculoPorTipo[i].classList.contains("none-visible")){
+                    camposVehiculoPorTipo[i].classList.add("none-visible");
                 }
+
             }
         }
     });
@@ -168,6 +178,104 @@ document.addEventListener("DOMContentLoaded",function(){
         frmABM.classList.add("none-visible");
         frmPrincipal.classList.remove("none-visible");
     });
+
+    botonModificarABM.addEventListener("click",(e)=>{
+        e.preventDefault();
+        let camposPropiedades = [];
+        const objetos = ObtenerVehiculos(keyLocalStorage);
+        const camposTipoVehiculo = Array.from(ObtenerElementoPorId("camposSegunTipo").children).filter((e)=>e.tagName === "INPUT");
+        const camposVehiculo = Array.from(ObtenerElementoPorId("camposVehiculo").children).filter((e)=>e.tagName === "INPUT");
+
+        camposPropiedades = camposVehiculo.concat(camposTipoVehiculo);
+        let campoId = camposPropiedades.find((campo)=>campo.id.split("-")[1] == "id");
+
+        for(let i = 0;i<objetos.length;i++){
+            let objeto = objetos[i];
+            if(objeto.id == campoId.value){
+                camposPropiedades.forEach((cp)=>{
+                    let campoPropiedad = cp.id.split("-")[1];
+                    if(campoPropiedad !== "id" && objeto.hasOwnProperty(campoPropiedad)){
+                        // Modificar en caso de ser una entidad distinta:
+                        let valorCampo = cp.value;
+                        if(campoPropiedad !== "modelo"){
+                            valorCampo = parseFloat(valorCampo);
+                        }
+                        objeto[campoPropiedad] = valorCampo;
+                    }
+                })
+                break;
+            }
+        }
+        const resultado = window.confirm("¿Estás seguro de realizar esta acción?");
+        if (resultado) {
+            localStorage.setObjects(keyLocalStorage,objetos);
+        // El usuario hizo clic en "OK"
+        alert("Registro Modificado con exito");
+        } 
+        InicializarFrmABM();
+        objetosFiltrados = ObtenerVehiculos(keyLocalStorage);
+        ActualizarTablaPricipal(tablaPrincipal,propiedades,objetosFiltrados);
+        frmABM.classList.add("none-visible");
+        frmPrincipal.classList.remove("none-visible");
+    });
+
+    botonAgregarABM.addEventListener("click", (e) => {
+        e.preventDefault();
+        let camposPropiedades = [];
+        let nuevoObjeto = {};
+        const objetos = ObtenerVehiculos(keyLocalStorage);
+        const nuevoId = AsignarId(objetos);
+        const camposTipoVehiculo = Array.from(ObtenerElementoPorId("camposSegunTipo").children).filter((e) => e.tagName === "INPUT");
+        const camposVehiculo = Array.from(ObtenerElementoPorId("camposVehiculo").children).filter((e) => e.tagName === "INPUT");
+        const elementoSeleccionado = ObtenerElementoPorId("selecionarTipofrmABM").value;
+        camposPropiedades = camposVehiculo.concat(camposTipoVehiculo);
+        let objetoTemporal = {};
+    
+        camposPropiedades.forEach((cp) => {
+            let clave = cp.id.split("-")[1];
+            let valor = cp.value;
+            if (!isNaN(parseFloat(valor))) {
+                valor = parseFloat(valor);
+            }
+            objetoTemporal[clave] = valor;
+        });
+    
+        if (elementoSeleccionado !== "todos") {
+    
+            try {
+                switch (elementoSeleccionado) {
+                    case "terrestre":
+                        nuevoObjeto = new Terrestre(nuevoId, objetoTemporal.modelo, objetoTemporal.anoFab, objetoTemporal.velMax, objetoTemporal.cantPue, objetoTemporal.cantRue);
+                        break;
+                    case "aereo":
+                        nuevoObjeto = new Aereo(nuevoId, objetoTemporal.modelo, objetoTemporal.anoFab, objetoTemporal.velMax, objetoTemporal.altMax, objetoTemporal.autonomia);
+                        break;
+                }
+    
+                const resultado = window.confirm("¿Estás seguro de realizar esta acción?");
+                if (resultado) {
+                    objetos.push(nuevoObjeto);
+                    localStorage.setObjects(keyLocalStorage, objetos);
+    
+                    // El usuario hizo clic en "OK"
+                    alert("Registro agregado con exito");
+                }
+                InicializarFrmABM();
+                objetosFiltrados = ObtenerVehiculos(keyLocalStorage);
+                ActualizarTablaPricipal(tablaPrincipal, propiedades, objetosFiltrados);
+                frmABM.classList.add("none-visible");
+                frmPrincipal.classList.remove("none-visible");
+    
+            } catch (e) {
+                alert(e.message);
+            }
+    
+        } else {
+            alert("Debe seleccionar al menos un tipo");
+        }
+    
+    });
+    
 
 
 
