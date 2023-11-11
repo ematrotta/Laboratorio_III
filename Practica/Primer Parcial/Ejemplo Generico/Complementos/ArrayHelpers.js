@@ -17,11 +17,11 @@ export function ObtenerArrayConstructores(arrObjetos){
 }
 
 export function OrdenarObjetos(arrObj,propiedad){
-    arrayObjetosOrdenado = arrObj.sort((a,b)=>{
+    let arrayObjetosOrdenado = arrObj.sort((a,b)=>{
 
-        if (a === undefined && b === undefined) return 0; // son iguales
-        if (a === undefined) return -1; // a va al principio
-        if (b === undefined) return 1;
+        if (a[propiedad] === undefined && b[propiedad] === undefined) return 0; // son iguales
+        if (a[propiedad] === undefined) return -1; // a va al principio
+        if (b[propiedad] === undefined) return 1;
 
         if(a[propiedad] > b[propiedad]){
             return 1;

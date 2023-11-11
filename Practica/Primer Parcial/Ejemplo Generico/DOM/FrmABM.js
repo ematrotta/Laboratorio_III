@@ -1,5 +1,12 @@
-import { $,ObtenerElementoPorId,LetraCapital} from "../Complementos/ComplementedScripts.js";
+import { $,ObtenerElementoPorId,LetraCapital,AsignarClase,OcultarCampos} from "../Complementos/ComplementedScripts.js";
 
+
+/**
+ * Setea en "todos" el select contenido dentro del formulario ABM, hace visible el mismo, 
+ * coloca en vacío todos los campos de texto, asigna una clase si es que no la posee a los datos generales
+ * y otra a los datos especificos del objeto
+ * @returns {Array} con los campos contenidos dentro de la división de tipo especial
+ */
 export function InicializarFrmABM(){
     const formularioABM = ObtenerElementoPorId("frmABM");
     const selectABM = ObtenerElementoPorId("selecionarTipofrmABM");
@@ -10,40 +17,28 @@ export function InicializarFrmABM(){
     if(!formularioABM.classList.contains("none-visible")){
         formularioABM.classList.add("none-visible");
     }
-    const propiedadesVehiculosDivision = ObtenerElementoPorId("camposVehiculo").children;
-    const contenedorAtributosEspeciales = ObtenerElementoPorId("camposSegunTipo").children;
+    const propiedadesVehiculosDivision = Array.from(ObtenerElementoPorId("camposVehiculo").children);
+    const contenedorAtributosEspeciales = Array.from(ObtenerElementoPorId("camposSegunTipo").children);
+    const campos = propiedadesVehiculosDivision.concat(contenedorAtributosEspeciales);
 
+    campos.forEach((cmp)=>{
+        if(cmp.tagName === "INPUT"){
+            cmp.value = "";
+        }
+    })
 
-    for(let i = 0;i<propiedadesVehiculosDivision.length;i++){
-        let campoVehiculo = propiedadesVehiculosDivision[i];
-        switch(campoVehiculo.tagName){
-            case "INPUT":
-                campoVehiculo.value = "";
-                break;
-            case "SELECT":
-                campoVehiculo.value = "todos";
-                break;
-        }
-        campoVehiculo.classList.add(`field-vehicle`);
-    }
-    for(let i = 0;i<contenedorAtributosEspeciales.length;i++){
-        let campoVehiculo = contenedorAtributosEspeciales[i];
-        if(campoVehiculo.tagName === "INPUT"){
-            campoVehiculo.value = "";
-        }
-        campoVehiculo.classList.add(`field-typeOfVehicle`);
-        if(!campoVehiculo.classList.contains(`field-typeOfVehicle`)){
-            campoVehiculo.classList.add(`field-typeOfVehicle`);
-        }
-        if(!campoVehiculo.classList.contains(`none-visible`)){
-            campoVehiculo.classList.add(`none-visible`);
-        }
+    AsignarClase(propiedadesVehiculosDivision,"field-vehicle");
+    AsignarClase(contenedorAtributosEspeciales,"field-typeOfVehicle");
+    OcultarCampos(contenedorAtributosEspeciales,true);
 
-    }
     return contenedorAtributosEspeciales;
 }
 
 
+/**
+ * Crea opciones para el select del formulario ABM
+ * @param {Array} arrTipos array de las opciones para el formulario ABM
+ */
 export function CrearOpcionesSelectABM(arrTipos){
     const selectPrincipal = ObtenerElementoPorId("selecionarTipofrmABM");
     selectPrincipal.addEventListener("change",(e)=>{

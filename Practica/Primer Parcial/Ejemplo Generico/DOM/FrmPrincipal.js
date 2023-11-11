@@ -2,6 +2,13 @@ import { ObtenerArrayConstructores } from "../Complementos/ArrayHelpers.js";
 import { $, LetraCapital,ObtenerElementoPorId } from "../Complementos/ComplementedScripts.js";
 import { ActualizarTablaPricipal } from "./TablaPrincipal.js";
 
+
+/**
+ * Crea los elementos checks que muestran u ocultan columnas de la tabla prinicipal, 
+ * Crea las opciones del selector principal a través de los constructores
+ * @param {Array} propiedades Contiene las propiedades de todos los objetos, cualquiera sea su tipo
+ * @param {Array} datos Contiene todos los objetos
+ */
 export function InicializarFormularioPrincipal(propiedades,datos){
     const contenedorChecks = ObtenerElementoPorId("filtrosDeColumnas");
     const tablaPrincipal = ObtenerElementoPorId("tablaPrincipal");
@@ -10,6 +17,11 @@ export function InicializarFormularioPrincipal(propiedades,datos){
     ActualizarTablaPricipal(tablaPrincipal,propiedades,datos);
 }
 
+/**
+ * Crea los elementos checks y sus labels
+ * @param {HTMLElement} contenedor Contenedor de los elementos checks y sus labels
+ * @param {Array} arrPropiedades Propiedades de todos los objetos
+ */
 function CrearChecks(contenedor,arrPropiedades){
 
     arrPropiedades.forEach(propiedad => {
@@ -32,6 +44,10 @@ function CrearChecks(contenedor,arrPropiedades){
 
 }
 
+/**
+ * 
+ * @param {Array} arrTipos tipos de elementos que se quisieran mostrar en el select principal
+ */
 function CrearOpcionesSelectPrincipal(arrTipos){
     const selectPrincipal = ObtenerElementoPorId("selecionarTipofrmPrincipal");
     selectPrincipal.addEventListener("change",(e)=>{

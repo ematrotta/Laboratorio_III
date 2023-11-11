@@ -1,5 +1,12 @@
 import{$,EliminarElementos,LetraCapital} from "../Complementos/ComplementedScripts.js";
 
+/**
+ * Elimina todo lo contenido en la tabla y la vuelve a crear: Inicia con los encabezados basados en las propiedades,
+ * y luego crea el cuerpo
+ * @param {HTMLElement} tabla 
+ * @param {Array} arrPropiedades propiedades de todos los elementos
+ * @param {Array} arrObjetos todos los objetos correspondientes
+ */
 export function ActualizarTablaPricipal(tabla,arrPropiedades,arrObjetos){
     EliminarElementos(tabla);
     const nuevoEncabezado = CrearEncabezados(arrPropiedades);
@@ -9,6 +16,11 @@ export function ActualizarTablaPricipal(tabla,arrPropiedades,arrObjetos){
 }
 
 
+/**
+ * Crea los encabezados y asigna el evento para ordenar la tabla
+ * @param {Array} arrPropiedades 
+ * @returns la fila de encabezados
+ */
 function CrearEncabezados(arrPropiedades){
     const nuevoEncabezado = $("thead");
     const nuevaFila = $("tr");
@@ -30,6 +42,12 @@ function CrearEncabezados(arrPropiedades){
     return nuevaFila;
 }
 
+/**
+ * Crea el cuerpo de la tabla. Las posiciones de cada elemento se basan en como se muestra, los encabezados
+ * @param {Array} arrObjetos todos los objetos alojados en almacenamiento.
+ * @param {HTMLElement} filaEncabezado objeto obtenido luego de haber creado el encabezado
+ * @returns nuevo cuerpo de la tabla
+ */
 function CrearCuerpo(arrObjetos,filaEncabezado){
     const nuevoCuerpo = $("tbody");
     const columnas = Array.from(filaEncabezado.children);
