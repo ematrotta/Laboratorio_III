@@ -32,6 +32,8 @@ function CrearChecks(contenedor,arrPropiedades){
         nuevoCheck.id = `chk-${propiedad}`;
         nuevaLabel.id = `lbl-${propiedad}`;
         nuevaLabel.innerText = LetraCapital(propiedad);
+        // nuevaLabel.classList.add("horizontal-group");
+        // nuevoCheck.classList.add("horizontal-group");
         nuevaLabel.setAttribute("for",nuevoCheck.id);
         nuevoCheck.addEventListener("change",(e)=>{
             e.preventDefault();

@@ -25,6 +25,7 @@ Storage.prototype.setObjects = function(key,objects){
     return (this.setItem(key,JSON.stringify(objects)));
 }
 
+// Modificar según el tipo de objeto
 /**
  * Obtiene el json string alojado en el local storage y lo transforma en un nuevo array de vehiculos
  * @param {string} keyLocalStorage 
@@ -46,12 +47,45 @@ function ObtenerVehiculos(keyLocalStorage){
     return objArr;
 }
 
+function ObtenerDatosDeCampos(arrCamposInput){
+    const objetoTemporal = {};
+    arrCamposInput.forEach((cp) => {
+        let clave = cp.id.split("-")[1];
+        let valor = cp.value;
+        if (!isNaN(parseFloat(valor))) {
+            valor = parseFloat(valor);
+        }
+        objetoTemporal[clave] = valor;
+    });
+
+    return objetoTemporal;
+}
+
+// Modificar según el tipo de objeto
+function validarInputs(arrCamposInput, objType){
+    let objetoTemporal = ObtenerDatosDeCampos(arrCamposInput);
+    let datosInvalidos = [];
+
+    datosInvalidos["modelo"] = objetoTemporal["modelo"] !== undefined && '';
+    datosInvalidos["velMax"] = objetoTemporal["velMax"] > 0;
+    datosInvalidos["anoFab"] = objetoTemporal["anoFab"] > 1885;
+    if(objType === "terrestre"){
+        datosInvalidos["cantPue"] = objetoTemporal["cantPue"] > -1;
+        datosInvalidos["cantRue"] = objetoTemporal["cantRue"] > 0;
+    }
+    else if(objType === "aereo"){
+        datosInvalidos["altMax"] = objetoTemporal["altMax"] > 0;
+        datosInvalidos["autonomia"] = objetoTemporal["autonomia"] > 0;
+    }
+    return !Object.values(datosInvalidos).some(value => value === false);
+}
+
 
 document.addEventListener("DOMContentLoaded",function(){
     const keyLocalStorage = "vehiculos";
     const tablaPrincipal = ObtenerElementoPorId("tablaPrincipal");
-    const frmABM = ObtenerElementoPorId("frmABM");
-    const frmPrincipal = ObtenerElementoPorId("frmPrincipal");
+    const sectionFrmABM = ObtenerElementoPorId("sectionFrmABM");
+    const sectionFrmPrincipal = ObtenerElementoPorId("sectionFrmPrincipal");
     let selectPrincipal = ObtenerElementoPorId("selecionarTipofrmPrincipal");
     let propiedades = ObtenerArrayPropiedades(ObtenerVehiculos(keyLocalStorage));
     let objetosFiltrados = ObtenerVehiculos(keyLocalStorage);
@@ -159,8 +193,8 @@ document.addEventListener("DOMContentLoaded",function(){
         const propiedadesObjeto = Object.getOwnPropertyNames(objeto);
 
 
-        frmABM.classList.remove("none-visible");
-        frmPrincipal.classList.add("none-visible");
+        sectionFrmABM.classList.remove("none-visible");
+        sectionFrmPrincipal.classList.add("none-visible");
 
         // Inhabilitamos la selección del tipo
         selectABM.value = nombreTipo;
@@ -188,6 +222,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
     document.addEventListener("OrdenarTabla",(e)=>{
         e.preventDefault();
+        // Ordenamos los objetos que sean visibles, es decir que esten filtrados unicamente
         const objetosOrdenados = OrdenarObjetos(objetosFiltrados,e.detail);
         objetosFiltrados = objetosOrdenados;
         ActualizarTablaPricipal(tablaPrincipal,propiedades,objetosFiltrados);
@@ -199,15 +234,15 @@ document.addEventListener("DOMContentLoaded",function(){
         OcultarCampos([botonEliminarABM],true);
         OcultarCampos([botonModificarABM],true);
         OcultarCampos([botonAgregarABM],false);
-        frmABM.classList.remove("none-visible");
-        frmPrincipal.classList.add("none-visible");
+        sectionFrmABM.classList.remove("none-visible");
+        sectionFrmPrincipal.classList.add("none-visible");
     });
 
     botonCancelarABM.addEventListener("click",(e)=>{
         e.preventDefault();
         InicializarFrmABM();
-        frmABM.classList.add("none-visible");
-        frmPrincipal.classList.remove("none-visible");
+        sectionFrmABM.classList.add("none-visible");
+        sectionFrmPrincipal.classList.remove("none-visible");
     });
 
     botonEliminarABM.addEventListener("click",(e)=>{
@@ -226,8 +261,8 @@ document.addEventListener("DOMContentLoaded",function(){
         selectPrincipal.value = "todos";
         selectPrincipal.selected = true;
         ActualizarTablaPricipal(tablaPrincipal,propiedades,objetosFiltrados);
-        frmABM.classList.add("none-visible");
-        frmPrincipal.classList.remove("none-visible");
+        sectionFrmABM.classList.add("none-visible");
+        sectionFrmPrincipal.classList.remove("none-visible");
     });
 
     botonModificarABM.addEventListener("click",(e)=>{
@@ -236,38 +271,41 @@ document.addEventListener("DOMContentLoaded",function(){
         const objetos = ObtenerVehiculos(keyLocalStorage);
         const camposTipoVehiculo = Array.from(ObtenerElementoPorId("camposSegunTipo").children).filter((e)=>e.tagName === "INPUT");
         const camposVehiculo = Array.from(ObtenerElementoPorId("camposVehiculo").children).filter((e)=>e.tagName === "INPUT");
-
         camposPropiedades = camposVehiculo.concat(camposTipoVehiculo);
-        let campoId = camposPropiedades.find((campo)=>campo.id.split("-")[1] == "id");
 
-        for(let i = 0;i<objetos.length;i++){
-            let objeto = objetos[i];
-            if(objeto.id == campoId.value){
-                camposPropiedades.forEach((cp)=>{
-                    let campoPropiedad = cp.id.split("-")[1];
-                    if(campoPropiedad !== "id" && objeto.hasOwnProperty(campoPropiedad)){
-                        // Modificar en caso de ser una entidad distinta:
-                        let valorCampo = cp.value;
-                        if(campoPropiedad !== "modelo"){
-                            valorCampo = parseFloat(valorCampo);
-                        }
-                        objeto[campoPropiedad] = valorCampo;
-                    }
-                })
-                break;
+        let resultadoValidacion = validarInputs(camposPropiedades,selectPrincipal.value);
+
+        if(resultadoValidacion === true){
+            const objetoTemporal = ObtenerDatosDeCampos(camposPropiedades);
+
+            for(let i = 0;i<objetos.length;i++){
+                let objeto = objetos[i];
+                // Obtenemos todas las propiedades del objeto excepto el id que no se modifica
+                let propiedadesObjeto = Object.getOwnPropertyNames(objeto).filter((p)=>p!=="id");
+                if(objeto.id == objetoTemporal.id){
+                    // Solo actualizamos al objeto, las propiedades que correspondan.
+                    propiedadesObjeto.forEach((p)=>{
+                        objeto[p] = objetoTemporal[p];
+                    })
+                    break;
+                }
             }
+            const resultado = window.confirm("¿Estás seguro de realizar esta acción?");
+            if (resultado) {
+                localStorage.setObjects(keyLocalStorage,objetos);
+            // El usuario hizo clic en "OK"
+            alert("Registro Modificado con exito");
+            } 
+            InicializarFrmABM();
+            objetosFiltrados = ObtenerVehiculos(keyLocalStorage);
+            ActualizarTablaPricipal(tablaPrincipal,propiedades,objetosFiltrados);
+            sectionFrmABM.classList.add("none-visible");
+            sectionFrmPrincipal.classList.remove("none-visible");
+        }else{
+            alert("Alguno de los datos es erroneo");
         }
-        const resultado = window.confirm("¿Estás seguro de realizar esta acción?");
-        if (resultado) {
-            localStorage.setObjects(keyLocalStorage,objetos);
-        // El usuario hizo clic en "OK"
-        alert("Registro Modificado con exito");
-        } 
-        InicializarFrmABM();
-        objetosFiltrados = ObtenerVehiculos(keyLocalStorage);
-        ActualizarTablaPricipal(tablaPrincipal,propiedades,objetosFiltrados);
-        frmABM.classList.add("none-visible");
-        frmPrincipal.classList.remove("none-visible");
+
+
     });
 
     botonAgregarABM.addEventListener("click", (e) => {
@@ -280,18 +318,12 @@ document.addEventListener("DOMContentLoaded",function(){
         const camposVehiculo = Array.from(ObtenerElementoPorId("camposVehiculo").children).filter((e) => e.tagName === "INPUT");
         const elementoSeleccionado = selectABM.value;
         camposPropiedades = camposVehiculo.concat(camposTipoVehiculo);
-        let objetoTemporal = {};
-    
-        camposPropiedades.forEach((cp) => {
-            let clave = cp.id.split("-")[1];
-            let valor = cp.value;
-            if (!isNaN(parseFloat(valor))) {
-                valor = parseFloat(valor);
-            }
-            objetoTemporal[clave] = valor;
-        });
+        let objetoTemporal = ObtenerDatosDeCampos(camposPropiedades);
     
         if (elementoSeleccionado !== "todos") {
+            // Modificar según el tipo de objeto
+            // validamos a través de un objeto creado de manera tempral que queda campo sea correcto a través del 
+            // constructor de cada clase
     
             try {
                 switch (elementoSeleccionado) {
@@ -317,8 +349,8 @@ document.addEventListener("DOMContentLoaded",function(){
                 selectPrincipal.value = "todos";
                 selectPrincipal.selected = true;
                 ActualizarTablaPricipal(tablaPrincipal, propiedades, objetosFiltrados);
-                frmABM.classList.add("none-visible");
-                frmPrincipal.classList.remove("none-visible");
+                sectionFrmABM.classList.add("none-visible");
+                sectionFrmPrincipal.classList.remove("none-visible");
     
             } catch (e) {
                 alert(e.message);

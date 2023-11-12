@@ -53,4 +53,3 @@ export function CalcularPorPropiedad(arrObj,propiedad){
     return arrObj.reduce(((inicial,obj)=>inicial+obj[propiedad]),0);
 
 }
-

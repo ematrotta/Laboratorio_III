@@ -8,7 +8,7 @@ import { $,ObtenerElementoPorId,LetraCapital,AsignarClase,OcultarCampos} from ".
  * @returns {Array} con los campos contenidos dentro de la división de tipo especial
  */
 export function InicializarFrmABM(){
-    const formularioABM = ObtenerElementoPorId("frmABM");
+    const formularioABM = ObtenerElementoPorId("sectionFrmABM");
     const selectABM = ObtenerElementoPorId("selecionarTipofrmABM");
     selectABM.value = "todos";
     selectABM.selected = true;
