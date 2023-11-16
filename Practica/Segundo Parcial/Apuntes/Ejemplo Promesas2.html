@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        #cuerpo{
+            background-color: beige;
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+        }
+        .columna{
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        #columna1{
+            background-color: aqua;
+        }
+        #columna2{
+            background-color:lightgreen;
+        }
+        #columna3{
+            background-color:yellow;
+        }
+        #columna4{
+            background-color:coral;
+        }
+        button{
+            width: fit-content;
+        }
+    </style>
+
+    <script>
+
+        function apendizarImagen(idColumna, url){
+            var columna = document.getElementById(idColumna);
+            var imagen = document.createElement("img");
+            imagen.setAttribute("src",url);
+            imagen.style.maxWidth="100%";
+            columna.appendChild(imagen);
+        }
+
+        function apendizarTexto(idColumna, texto){
+            var columna = document.getElementById(idColumna);
+            var p = document.createElement("p");
+            var texto = document.createTextNode(texto);
+            p.appendChild(texto);
+            columna.appendChild(p);
+        }
+
+
+        function agregarImagenAsincronico(columna) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                var blob = JSON.parse(this.responseText);
+                apendizarImagen(columna, blob.image_uris.normal);
+                }
+            };
+            xhttp.open("GET", "https://api.scryfall.com/cards/named?exact=rancor", true);
+            xhttp.send();
+        }
+
+        function agregarImagenSincronico(columna) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                var blob = JSON.parse(this.responseText);
+                apendizarImagen(columna, blob.image_uris.normal);
+                }
+            };
+            xhttp.open("GET", "https://api.scryfall.com/cards/named?exact=rancor", false);
+            xhttp.send();
+        }
+
+        function agregarImagenAsincronicoCallback(columna,agregarTexto, agregarImagen) {
+            agregarTexto(columna,"Buscando Imagen");
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                var blob = JSON.parse(this.responseText);
+                agregarImagen(columna, blob.image_uris.normal);
+                apendizarTexto(columna,"Imagen Agregada");
+                }
+            };
+            xhttp.open("GET", "https://api.scryfall.com/cards/named?exact=rancor", false);
+            xhttp.send();
+        }
+
+
+
+
+
+
+        function buscarImagenMal(exito, error) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("Exito Buscar mal");
+                    console.log(this);
+                    console.log(this.responseText);
+                    var blob = JSON.parse(this.responseText);
+                    exito(blob);
+                }
+                if (this.readyState == 4 && this.status == 404){
+                    console.log("Error Buscar mal");
+                    console.log(this);
+                    console.log(this.responseText);
+                    var blob = JSON.parse(this.responseText);
+                    error(blob);
+                }
+            };
+            xhttp.open("GET", "https://api.scryfall.com/cards/named?exact=racor", true);
+            xhttp.send();
+        }
+
+        function buscarImagenBien(exito, error) {
+            apendizarTexto("columna4","Buscando Denuevo Bien");
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("Exito Buscar bien");
+                    console.log(this);
+                    console.log(this.responseText);
+                    var blob = JSON.parse(this.responseText);
+                    exito(blob);
+                }
+                if (this.readyState == 4 && this.status == 404){
+                    console.log("Error Buscar bien");
+                    console.log(this);
+                    console.log(this.responseText);
+                    var blob = JSON.parse(this.responseText);
+                    error(blob);
+                }
+            };
+            xhttp.open("GET", "https://api.scryfall.com/cards/named?exact=rancor", true);
+            xhttp.send();
+        }
+
+        function buscarDenuevo(x){
+            let p = new Promise(buscarImagenBien);
+            p.then(procesarProcesarExito)
+            .catch(procesarProcesarError);
+        }
+
+        function procesarProcesarError(resultado) {
+            apendizarTexto("columna4", resultado.details);
+            throw resultado;
+        }
+
+        function procesarProcesarExito(resultado) {
+            apendizarTexto("columna4","Carta Encontrada");
+            apendizarImagen("columna4", resultado.image_uris.normal);
+            apendizarTexto("columna4","Imagen Agregada");
+        }
+
+        function btn1(){
+            apendizarTexto("columna1","Buscando Imagen");
+            agregarImagenAsincronico("columna1");
+            apendizarTexto("columna1","Imagen Agregada");
+        }
+        function btn2(){
+            apendizarTexto("columna2","Buscando Imagen");
+            agregarImagenSincronico("columna2");
+            apendizarTexto("columna2","Imagen Agregada");
+        }
+        function btn3(){
+            agregarImagenAsincronicoCallback("columna3",apendizarTexto,apendizarImagen);   
+            apendizarTexto("columna3","Fin Busqueda Imagen");         
+        }
+        function btn4(){
+            let p = new Promise(buscarImagenMal);
+            p.then(procesarProcesarExito)
+            .catch(procesarProcesarError)
+            .catch(buscarDenuevo);
+        }
+
+    </script>
+</head>
+
+
+
+<html>
+    <body>
+        <div id="cuerpo">
+            <div id="columna1" class="columna">
+                <p>Recupera Imagen Asincronicamente</p>
+                <button id="btn1" onclick="btn1()">Asincronico</button>
+            </div>
+            <div id="columna2" class="columna">
+                <p>Recupera imagen Forzando Sincronicidad</p>
+                <button id="btn2" onclick="btn2()">Sincronico</button>
+            </div>
+            <div id="columna3" class="columna">
+                <p>Recupera imagen Con Callbacks En la recuperacionde la Imagen</p>
+                <button id="btn3" onclick="btn3()">Asincronico Callback</button>
+            </div>
+            <div id="columna4" class="columna">
+                <p>Recupera imagen "Racor" con promesa</p>
+                <button id="btn4" onclick="btn4()">Promesa Error</button>
+            </div>
+        </div>
+    </body>
+</html>

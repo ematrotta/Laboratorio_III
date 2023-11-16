@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        #cuerpo{
+            background-color: beige;
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+        }
+        .columna{
+            display: flex;
+            flex-direction: column;
+            flex-grow: 0;     /* do not grow   - initial value: 0 */
+            flex-shrink: 0;   /* do not shrink - initial value: 1 */
+            flex-basis: 14.28%; /* width/height  - initial value: auto */
+        }
+        #columna1{
+            background-color: aqua;
+        }
+        #columna2{
+            background-color:lightgreen;
+        }
+        #columna3{
+            background-color:yellow;
+        }
+        #columna4{
+            background-color:coral;
+        }
+        #columna5{
+            background-color:antiquewhite;
+        }
+        #columna6{
+            background-color:darkcyan;
+        }
+        #columna7{
+            background-color:sandybrown;
+        }
+        button{
+            width: fit-content;
+        }
+    </style>
+
+    <script>
+        /*
+        new <any>(
+	                executor: (
+		                        resolve: (value:any)=>void, 
+		                        reject:(reason?:any)=>void
+		                    ) => void
+	            ) = Promise <any>
+        */
+             
+
+        function operador(exito , fracaso){
+            let suma = 1+1;
+            if (suma == 2) {
+                exito("Suma = 2")
+            } else{
+                fracaso("Suma != 2")
+            }; 
+        }
+
+        function operadorFallido(exito , fracaso){
+            let suma = 1+2;
+            if (suma == 2) {
+                exito("Suma = 2")
+            } else{
+                fracaso("Suma != 2")
+            }; 
+        }
+        
+        function imprimirExito(cosaResultado){
+            console.log("Resolucion Exitosa - " + cosaResultado);
+            return cosaResultado;
+        }
+
+        function imprimirExito2(cosaResultado){
+            console.log("Resolucion Exitosa Segunda Impresion - " + cosaResultado);
+            return cosaResultado;
+        }
+
+
+        function imprimirFracaso(cosaResultado){
+            console.log("Resolucion Fallida - " + cosaResultado);
+        }
+
+        function imprimirFracasoEncadenado(cosaResultado){
+            console.log("Resolucion Fallida - " + cosaResultado);
+            throw cosaResultado;
+        }
+
+        function imprimirFin(){
+            console.log("El finally se ejecuta siempre");
+        }
+
+        function intentarDeNuevo(objeto){
+            console.log("Intentando De Nuevo");
+            let promesa = new Promise(operador);
+            promesa.then(imprimirExito).catch(imprimirFracaso)
+        }
+
+
+       
+
+        function btn1(){
+            let promesa = new Promise(operador);
+            promesa.then(imprimirExito).catch(imprimirFracaso).finally(imprimirFin);
+            console.log(promesa);
+        }
+
+        function btn2(){
+            let promesa = new Promise(operadorFallido);
+            promesa.then(imprimirExito).catch(imprimirFracaso);            
+        }
+
+
+        function btn3(){
+            let promesa1 = new Promise(operador);
+            promesa1.then(imprimirExito).then(imprimirExito2).catch(imprimirFracaso);
+            let promesa2 = new Promise(operadorFallido);
+            promesa2.then(imprimirExito).catch(imprimirFracasoEncadenado).catch(intentarDeNuevo); 
+        }
+
+        function btn4(){
+            let promesa = new Promise((exito, fallo)=>{
+                let suma = 1+2;
+                if (suma == 2) {
+                    exito("Suma = 2");
+                } else{
+                    fallo("Suma != 2");
+                }; 
+            });
+
+            promesa
+            .then((salioBien)=>{console.log("Grande Sabes Sumar!!!")})
+            .catch((salioMal)=>{
+                console.log("Falta sopa, probemos denuevo"); 
+                throw salioMal;})
+            .catch((resultadoAnterior)=>{
+                let nuevaPromesa = new Promise((exito, fallo)=>{
+                    let suma = 1+2;
+                    if (suma == 2) {
+                        exito("Segundo Intento: Suma = 2");
+                    } else{
+                        fallo("Segundo Intento: Suma != 2");
+                    };
+                });
+                nuevaPromesa.then((ahoraSi)=>{console.log("Grande, ahora si sumamos bien: "+ahoraSi)})
+                .catch((todabiaNo)=>console.log("Sigue Faltando Sopa: "+todabiaNo));
+            });
+        }
+
+        function btn5(){
+            let p1 = new Promise((exito1,fallo1)=>{exito1("exito P1")});
+            let p2 = new Promise((exito2,fallo2)=>{exito2("exito P2")});
+            let p3 = new Promise((exito3,fallo3)=>{exito3("exito P3")});
+            Promise.all([p1,p2,p3])
+            .then((exito)=>{console.log(exito)})
+            .catch((fallo)=>{console.log("Fallos: "+ fallo)});
+        }
+
+        function btn6(){
+            let p1 = new Promise((exito1,fallo1)=>{console.log("Ejecutando p1");exito1("exito P1")});
+            let p2 = new Promise((exito2,fallo2)=>{console.log("Ejecutando p2");fallo2("fallo P2")});
+            let p3 = new Promise((exito3,fallo3)=>{console.log("Ejecutando p3");fallo3("fallo P3")});
+            Promise.all([p1,p2,p3])
+            .then((exito)=>{console.log("Exitos: "+ exito)})
+            .catch((fallo)=>{console.log("Fallos: "+ fallo)});
+        }
+
+        function btn7(){
+            let promesa = new Promise((bien , mal)=>{
+                setTimeout(function(){bien("Termine");},3000);
+            });
+            promesa.then((x)=>{console.log(promesa)}); //Imprime Tercero
+            console.log(promesa); //Imprime Primero
+            console.log("Se esta ejecutando la promesa"); //Imprime Segundo
+        }
+    </script>
+</head>
+
+
+
+<html>
+    <body>
+        <div id="general">
+            <p>Conceptos:</p>
+            <a href="https://javascript.info/async">Explicacion Conceptos Promesas en javascript.info</a>
+        </div>
+        <div id="cuerpo">
+            <div id="columna1" class="columna">
+                <p>Promesa Exitosa</p>
+                <button id="btn1" onclick="btn1()">Ejemplo</button>
+            </div>
+            <div id="columna2" class="columna">
+                <p>Promesa Error</p>
+                <button id="btn2" onclick="btn2()">Ejemplo</button>
+            </div>
+            <div id="columna3" class="columna">
+                <p>Promesa Encadenada</p>
+                <button id="btn3" onclick="btn3()">Ejemplo</button>
+            </div>
+            <div id="columna4" class="columna">
+                <p>Promesa Encadenada Sintaxis Flecha</p>
+                <p>Este ejemplo es similar al de la Promesa Encadenada con errores, pero escrito todo con funciones usando sintaxis de flecha ()=>{}</p>
+                <button id="btn4" onclick="btn4()">Ejemplo</button>
+            </div>
+            <div id="columna5" class="columna">
+                <p>Multiples Promesas Simultaneas Exitosas</p>
+                <p>El metodo de Clase Promise.all nos permite pasarle un array de promesas, ejecutarlas todas y luego hacer los Callbacks definidos en .then para cada resultado de las promesas.</p>
+                <p>El resultado es un array de los resultados individuales de cada promesa a ser procesados cada uno en el .then</p>
+                <button id="btn5" onclick="btn5()">Ejemplo</button>
+            </div>
+            <div id="columna6" class="columna">
+                <p>Multiples Promesas Simultaneas Con Errores</p>
+                <p>El metodo de Clase Promes.all es un metodo "a todo o nada", si una promesa falla, se ejecuta el .catch para el primer fallo.</p>
+                <p>Hay que tener cuidado, las operaciones de las promesas se ejecutan todas, solo el proceso del resultado es "a todo o nada"</p>
+                <button id="btn6" onclick="btn6()">Ejemplo</button>
+            </div>
+            <div id="columna7" class="columna">
+                <p>Las Promesas Tienen Estado</p>
+                <p>No existe en ECMASCRIPT6 (Standard de Javascript) una forma nativa de evaluar el estado de una promesa.</p>
+                <button id="btn7" onclick="btn7()">Ejemplo</button>
+            </div>
+        </div>
+    </body>
+</html>
