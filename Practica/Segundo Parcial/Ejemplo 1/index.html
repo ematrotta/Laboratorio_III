@@ -8,18 +8,22 @@
     <title>ABM Empleados Clientes</title>
 </head>
 <body>
+    <div id="spinnerLoad">
+        <img src="./Recursos/spinner.gif" alt="spinnerLoad">
+    </div>
     <div id="cuerpo">
         <section id="frmLista">
             <h2>Formulario Lista</h2>
             <table id="tablaLista"></table>
-            <button type="submit">Agregar elemento</button>
+            <button type="submit" id="btnAgregar">Agregar elemento</button>
         </section>
         <section id="frmABM">
             <h2>Formulario ABM</h2>
-            <div id="propsObjects">
+            <h3 id="tipoOperacion"></h3>
+            <div id="fieldsObjs">
             </div>
-            <button type="button">Aceptar</button>
-            <button type="button">Cancelar</button>
+            <button type="button" id="btnAceptarABM">Aceptar</button>
+            <button type="button" id="btnCancelarABM">Cancelar</button>
         </section>
     </div>
 </body>

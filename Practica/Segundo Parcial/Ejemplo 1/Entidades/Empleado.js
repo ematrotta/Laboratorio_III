@@ -6,6 +6,8 @@ export class Empleado extends Persona{
         if(typeof sueldo !== "number" || sueldo<0 || typeof ventas !== "number" || ventas<0 ){
             throw new Error("Alguno de los datos es erroneo");
         }
+        this.sueldo = sueldo;
+        this.ventas = ventas;
     }
 
     toString(){

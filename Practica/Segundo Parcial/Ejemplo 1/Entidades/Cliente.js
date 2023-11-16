@@ -6,6 +6,8 @@ export class Cliente extends Persona{
         if(typeof compras !== "number" || compras<0 || typeof telefono !== "string" ){
             throw new Error("Alguno de los datos es erroneo");
         }
+        this.compras = compras;
+        this.telefono = telefono;
     }
 
     toString(){
