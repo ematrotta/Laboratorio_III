@@ -37,15 +37,8 @@ function ObtenerObjetos(){
     xhttp.send(); //Envio la solicitud
 }
 
-function MostrarErrorExito(response){
-    response.text().then((r)=>{
-        alert(r);
-    });
-
-}
-
 async function AgregarObjeto(object){
-    return await fetch('http://localhost/API_LaboIII/PersonasEmpleadosClientes.php', {
+    const response = await fetch('http://localhost/API_LaboIII/PersonasEmpleadosClientes.php', {
     method: 'PUT', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -61,61 +54,7 @@ async function AgregarObjeto(object){
     body: JSON.stringify(object) // Tiene que coincidir con el Content-Type
   });
 
-}
-
-
-async function ModificarObjeto(objeto){
-
-    return await new Promise((exito,error)=>{
-            fetch('http://localhost/API_LaboIII/PersonasEmpleadosClientes.php', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-              'Content-Type': 'application/json'
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', 
-        // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, 
-                //same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(objeto) // Tiene que coincidir con el Content-Type
-          }).then((r)=>{
-            if(r.status === 200){
-                exito(r);
-            }else{
-                error(r);
-            }
-          })
-    })
-}
-
-async function EliminarObjeto(objeto){
-
-    return await new Promise((exito,error)=>{
-            fetch('http://localhost/API_LaboIII/PersonasEmpleadosClientes.php', {
-            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-              'Content-Type': 'application/json'
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', 
-        // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, 
-                //same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(objeto) // Tiene que coincidir con el Content-Type
-          }).then((r)=>{
-            if(r.status === 200){
-                exito(r);
-            }else{
-                error(r);
-            }
-          })
-    })
+  return response;
 }
 
 
@@ -136,6 +75,24 @@ document.addEventListener("DOMContentLoaded",()=>{
     const h3TipoOperacion = $("tipoOperacion");
 
     ObtenerObjetos();
+
+    
+    function ObtenerIdNuevo(response){
+        response.json().then(data=>{
+            OcultarCampos([spinner],true);
+            OcultarCampos([cuerpo],false);
+            OcultarCampos([frmLista],false);
+            OcultarCampos([frmABM],true);
+            alert(data.id);
+        }).catch("error");
+    }
+
+    function MostrarError(response){
+        response.text().then((r)=>{
+            alert(r);
+        });
+
+    }
 
     document.addEventListener("RecargarTabla",(e)=>{
         // Ocultamos los elementos que no queremos que se muestren
@@ -222,7 +179,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 
     botonAceptarABM.addEventListener("click",(e)=>{
         e.preventDefault();
-        // Obtenemos el tipo de operacion a realizar según el encabezado
         const tipoOperacion = h3TipoOperacion.innerText.toLowerCase();
         const camposTexto = Array.from(camposABM.children).filter((cmp)=>cmp.tagName === "INPUT");
         const tipoObjeto = Array.from(camposABM.children).find((cmp)=>cmp.tagName === "SELECT").value;
@@ -238,7 +194,6 @@ document.addEventListener("DOMContentLoaded",()=>{
         });
 
         if(ValidarCamposInput(objetoTemporal,tipoObjeto)){
-            // Mostramos solo el spinner
             OcultarCampos([spinner],false);
             OcultarCampos([cuerpo],true);
             OcultarCampos([frmLista],true);
@@ -261,10 +216,12 @@ document.addEventListener("DOMContentLoaded",()=>{
                                 
                             });
                         }else{
-                            throw r;
+                            r.text().then((r)=>{
+                                alert(r);
+                            })
                         }
                     })
-                    .catch(MostrarErrorExito).finally(()=>{
+                    .catch(MostrarError).finally(()=>{
                             OcultarCampos([spinner],true);
                             OcultarCampos([cuerpo],false);
                             OcultarCampos([frmLista],false);
@@ -272,40 +229,8 @@ document.addEventListener("DOMContentLoaded",()=>{
                         });
                     break;
                 case "eliminar":
-                    EliminarObjeto(objetoTemporal).then(MostrarErrorExito=>{
-                        // Convertimos el objeto temporal al correspondiente
-                        const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
-                        // Buscamos el indice y lo reemplazamos
-                        arrObjetos = arrObjetos.filter((o)=>nuevoObjeto.id !== o.id);
-                        // Actualizamos el local storage, actualizamos la pagina principal y mostramos los campos correspondientes
-                        localStorage.setObjects(keyLocalStorage,arrObjetos);
-                        ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
-                    })
-                    .catch(MostrarErrorExito)
-                    .finally(()=>{
-                        OcultarCampos([spinner],true);
-                        OcultarCampos([cuerpo],false);
-                        OcultarCampos([frmLista],false);
-                        OcultarCampos([frmABM],true);
-                    })
                     break;
                 case "modificar":
-                        ModificarObjeto(objetoTemporal).then(MostrarErrorExito)
-                        .catch(MostrarErrorExito)
-                        .finally(()=>{
-                            // Convertimos el objeto temporal al correspondiente
-                            const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
-                            // Buscamos el indice y lo reemplazamos
-                            const indiceObjeto = arrObjetos.findIndex((o)=>nuevoObjeto.id === o.id);
-                            arrObjetos[indiceObjeto] = nuevoObjeto;
-                            // Actualizamos el local storage, actualizamos la pagina principal y mostramos los campos correspondientes
-                            localStorage.setObjects(keyLocalStorage,arrObjetos);
-                            ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
-                            OcultarCampos([spinner],true);
-                            OcultarCampos([cuerpo],false);
-                            OcultarCampos([frmLista],false);
-                            OcultarCampos([frmABM],true);
-                        })
                     break;
             }
 
