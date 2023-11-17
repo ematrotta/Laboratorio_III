@@ -69,6 +69,7 @@ function CrearCamposEspecificos(contenedor,propiedades){
         nuevaLabel.innerText = `${LetraCapital(p)}:`;
         nuevaLabel.classList.add("none-visible");
         nuevoTextBox.classList.add("none-visible");
+        nuevoTextBox.classList.add("especificFields");
         contenedor.appendChild(nuevaLabel);
         contenedor.appendChild(nuevoTextBox);
     });

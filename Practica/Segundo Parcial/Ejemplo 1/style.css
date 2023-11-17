@@ -51,7 +51,7 @@ label {
     font-weight: bold;
 }
 
-input[type="text"],
+.especificFields,input[type="text"],
 select {
     width: calc(100% - 12px); /* Restar el ancho del padding */
     padding: 8px;
@@ -60,7 +60,6 @@ select {
     border-radius: 3px;
 }
 
-/* Clases específicas */
 .none-visible {
     display: none;
 }
@@ -68,13 +67,14 @@ select {
 /* Estilos para spinner */
 #spinnerLoad {
     position: fixed;
-    top: 50%;
+    /*Esto fija la posición al borde del 50% de altura y al 50% respecto del borde izquierdo*/
+    top: 50%; 
     left: 50%;
+    /* Y en este punto divide la posición de la imagen en partes iguales para que quede totalmente centrada */
     transform: translate(-50%, -50%);
 }
-/* Ocultar secciones por defecto */
 
-/* Estilos específicos para la tabla */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -82,17 +82,16 @@ table {
 }
 
 th {
-    background-color: #f2f2f2; /* Color de fondo para los encabezados */
-    text-align: center;
+    background-color: #f2f2f2;
     padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd; /* Borde para los encabezados */
+    text-align: center;
+    border: 1px solid #ddd;
 }
 
 td {
     padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd; /* Borde para las celdas */
+    text-align: center;
+    border: 1px solid #ddd;
 }
 
 

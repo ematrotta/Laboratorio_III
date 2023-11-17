@@ -17,8 +17,8 @@ function ObtenerObjetos(){
     const cuerpo = $("cuerpo");
     const frmLista = $("frmLista");
     const frmABM = $("frmABM");
-    // Ocultamos el cuerpo
 
+    // Ocultamos el cuerpo y los formularios
     OcultarCampos([cuerpo],true);
     OcultarCampos([frmLista],true);
     OcultarCampos([frmABM],true);
@@ -40,13 +40,6 @@ function ObtenerObjetos(){
     }; //Configúro manejador para cambio de estado
     xhttp.open("GET", "http://localhost/API_LaboIII/PersonasEmpleadosClientes.php", true); //Inicializo la solicitud
     xhttp.send(); //Envio la solicitud
-}
-
-function MostrarErrorExito(response){
-    response.text().then((r)=>{
-        alert(r);
-    });
-
 }
 
 async function AgregarObjeto(object){
@@ -120,6 +113,13 @@ async function EliminarObjeto(objeto){
             }
           })
     })
+}
+
+function MostrarErrorExito(response){
+    response.text().then((r)=>{
+        alert(r);
+    });
+
 }
 
 
@@ -349,10 +349,5 @@ document.addEventListener("DOMContentLoaded",()=>{
         })
 
     })
-
-
-
-
-
 
 });
