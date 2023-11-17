@@ -53,7 +53,7 @@ export function ObtenerDatosDeCampos(arrCamposInput){
     arrCamposInput.forEach((cp) => {
         let clave = cp.id.split("-")[1];
         let valor = cp.value;
-        if (!isNaN(parseFloat(valor))) {
+        if (!isNaN(parseFloat(valor)) && clave !=="telefono") {
             valor = parseFloat(valor);
         }
         objetoTemporal[clave] = valor;

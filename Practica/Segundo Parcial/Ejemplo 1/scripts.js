@@ -13,8 +13,6 @@ Storage.prototype.setObjects = function(key,objects){
 }
 
 function ObtenerObjetos(){
-    let respuesta;
-    let objArr;
     const cuerpo = $("cuerpo");
     const spinner = $("spinnerLoad");
     // Ocultamos el cuerpo
@@ -39,10 +37,32 @@ function ObtenerObjetos(){
     xhttp.send(); //Envio la solicitud
 }
 
+async function AgregarObjeto(object){
+    const response = await fetch('http://localhost/API_LaboIII/PersonasEmpleadosClientes.php', {
+    method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', 
+// no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, 
+        //same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(object) // Tiene que coincidir con el Content-Type
+  });
+
+  return response;
+}
+
+
 document.addEventListener("DOMContentLoaded",()=>{
     let propiedades;
     let EventoCargarFrm;
     let arrObjetos;
+    const keyLocalStorage = "personas";
     const spinner = $("spinnerLoad");
     const cuerpo = $("cuerpo");
     const frmLista = $("frmLista");
@@ -55,6 +75,25 @@ document.addEventListener("DOMContentLoaded",()=>{
     const h3TipoOperacion = $("tipoOperacion");
 
     ObtenerObjetos();
+
+    
+    function ObtenerIdNuevo(response){
+        response.json().then(data=>{
+            OcultarCampos([spinner],true);
+            OcultarCampos([cuerpo],false);
+            OcultarCampos([frmLista],false);
+            OcultarCampos([frmABM],true);
+            alert(data.id);
+        }).catch("error");
+    }
+
+    function MostrarError(response){
+        response.text().then((r)=>{
+            alert(r);
+        });
+
+    }
+
     document.addEventListener("RecargarTabla",(e)=>{
         // Ocultamos los elementos que no queremos que se muestren
         const respuesta = e.detail;
@@ -65,11 +104,10 @@ document.addEventListener("DOMContentLoaded",()=>{
         OcultarCampos([frmLista],false);
         OcultarCampos([frmABM],true);
 
-        localStorage.setObjects("personas",)
         if(arrObjetos === undefined){
             alert("El array de objetos es undefined");
         }else{
-            localStorage.setObjects("personas",JSON.stringify(arrObjetos));
+            localStorage.setObjects(keyLocalStorage,JSON.stringify(arrObjetos));
             propiedades = ObtenerArrayPropiedades(arrObjetos);
             ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
         };
@@ -98,8 +136,6 @@ document.addEventListener("DOMContentLoaded",()=>{
                 }else{
                     OcultarCampos([cmp],false);
                 }
-    
-                
             });
         }else{
             // Ocultamos los nodos hermanos
@@ -146,17 +182,58 @@ document.addEventListener("DOMContentLoaded",()=>{
         const tipoOperacion = h3TipoOperacion.innerText.toLowerCase();
         const camposTexto = Array.from(camposABM.children).filter((cmp)=>cmp.tagName === "INPUT");
         const tipoObjeto = Array.from(camposABM.children).find((cmp)=>cmp.tagName === "SELECT").value;
+        const propiedadesTipo = ObtenerArrayPropiedadesPorTipo(tipoObjeto);
         const objetoTemporal = ObtenerDatosDeCampos(camposTexto);
+        const propiedadesObjetoTemporal = Object.getOwnPropertyNames(objetoTemporal);
+
+        // Eliminamos los datos de campos que no correspondan a la clase seleccionada
+        propiedadesObjetoTemporal.forEach((p)=>{
+            if(!propiedadesTipo.includes(p)){
+                delete objetoTemporal[p];
+            }
+        });
+
         if(ValidarCamposInput(objetoTemporal,tipoObjeto)){
+            OcultarCampos([spinner],false);
+            OcultarCampos([cuerpo],true);
+            OcultarCampos([frmLista],true);
+            OcultarCampos([frmABM],true);
             switch(tipoOperacion){
                 case "agregar":
+                    // Le eliminamos al objeto temporal el id ya que no se debe pasar en el string
+                    delete objetoTemporal.id;
+                    AgregarObjeto(objetoTemporal)
+                    .then((r)=>{
+                        if(r.status === 200){
+                            r.json().then((r)=>{
+                                // Le asignamos el id de la respuesta al objeto
+                                objetoTemporal.id = r.id;
+                                const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
+                                arrObjetos.push(nuevoObjeto);
+                                localStorage.setObjects(keyLocalStorage,arrObjetos);
+                                alert("Objeto agregado con exito");
+                                ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
+                                
+                            });
+                        }else{
+                            r.text().then((r)=>{
+                                alert(r);
+                            })
+                        }
+                    })
+                    .catch(MostrarError).finally(()=>{
+                            OcultarCampos([spinner],true);
+                            OcultarCampos([cuerpo],false);
+                            OcultarCampos([frmLista],false);
+                            OcultarCampos([frmABM],true);
+                        });
                     break;
                 case "eliminar":
                     break;
                 case "modificar":
                     break;
             }
-            alert("todo ok");
+
         }else{
             alert("Alguno de los datos es erroneo");
         }
