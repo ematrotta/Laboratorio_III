@@ -272,7 +272,8 @@ document.addEventListener("DOMContentLoaded",()=>{
                         });
                     break;
                 case "eliminar":
-                    EliminarObjeto(objetoTemporal).then(MostrarErrorExito=>{
+                    EliminarObjeto(objetoTemporal).then((r)=>{
+                        MostrarErrorExito(r);
                         // Convertimos el objeto temporal al correspondiente
                         const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
                         // Buscamos el indice y lo reemplazamos
@@ -290,9 +291,8 @@ document.addEventListener("DOMContentLoaded",()=>{
                     })
                     break;
                 case "modificar":
-                        ModificarObjeto(objetoTemporal).then(MostrarErrorExito)
-                        .catch(MostrarErrorExito)
-                        .finally(()=>{
+                        ModificarObjeto(objetoTemporal).then((r)=>{
+                            MostrarErrorExito(r);
                             // Convertimos el objeto temporal al correspondiente
                             const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
                             // Buscamos el indice y lo reemplazamos
@@ -301,6 +301,9 @@ document.addEventListener("DOMContentLoaded",()=>{
                             // Actualizamos el local storage, actualizamos la pagina principal y mostramos los campos correspondientes
                             localStorage.setObjects(keyLocalStorage,arrObjetos);
                             ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
+                        })
+                        .catch(MostrarErrorExito)
+                        .finally(()=>{
                             OcultarCampos([spinner],true);
                             OcultarCampos([cuerpo],false);
                             OcultarCampos([frmLista],false);
