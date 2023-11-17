@@ -13,11 +13,15 @@ Storage.prototype.setObjects = function(key,objects){
 }
 
 function ObtenerObjetos(){
-    const cuerpo = $("cuerpo");
     const spinner = $("spinnerLoad");
+    const cuerpo = $("cuerpo");
+    const frmLista = $("frmLista");
+    const frmABM = $("frmABM");
     // Ocultamos el cuerpo
+
     OcultarCampos([cuerpo],true);
-    OcultarCampos([spinner],false);
+    OcultarCampos([frmLista],true);
+    OcultarCampos([frmABM],true);
 
     const xhttp = new XMLHttpRequest(); //Instancio el objeto
     xhttp.onreadystatechange = function() {
@@ -31,6 +35,7 @@ function ObtenerObjetos(){
                 spinner.style.display = "none";
                 alert("No se pudo acceder al recurso");
             }
+
         };
     }; //Configúro manejador para cambio de estado
     xhttp.open("GET", "http://localhost/API_LaboIII/PersonasEmpleadosClientes.php", true); //Inicializo la solicitud
@@ -62,7 +67,6 @@ async function AgregarObjeto(object){
   });
 
 }
-
 
 async function ModificarObjeto(objeto){
 
@@ -134,7 +138,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     const botonCancelarABM = $("btnCancelarABM");
     const botonAceptarABM = $("btnAceptarABM");
     const h3TipoOperacion = $("tipoOperacion");
-
+    
     ObtenerObjetos();
 
     document.addEventListener("RecargarTabla",(e)=>{
@@ -226,78 +230,58 @@ document.addEventListener("DOMContentLoaded",()=>{
         const tipoOperacion = h3TipoOperacion.innerText.toLowerCase();
         const camposTexto = Array.from(camposABM.children).filter((cmp)=>cmp.tagName === "INPUT");
         const tipoObjeto = Array.from(camposABM.children).find((cmp)=>cmp.tagName === "SELECT").value;
-        const propiedadesTipo = ObtenerArrayPropiedadesPorTipo(tipoObjeto);
         const objetoTemporal = ObtenerDatosDeCampos(camposTexto);
         const propiedadesObjetoTemporal = Object.getOwnPropertyNames(objetoTemporal);
 
-        // Eliminamos los datos de campos que no correspondan a la clase seleccionada
-        propiedadesObjetoTemporal.forEach((p)=>{
-            if(!propiedadesTipo.includes(p)){
-                delete objetoTemporal[p];
-            }
-        });
-
-        if(ValidarCamposInput(objetoTemporal,tipoObjeto)){
-            // Mostramos solo el spinner
-            OcultarCampos([spinner],false);
-            OcultarCampos([cuerpo],true);
-            OcultarCampos([frmLista],true);
-            OcultarCampos([frmABM],true);
-            switch(tipoOperacion){
-                case "agregar":
-                    // Le eliminamos al objeto temporal el id ya que no se debe pasar en el string
-                    delete objetoTemporal.id;
-                    AgregarObjeto(objetoTemporal)
-                    .then((r)=>{
-                        if(r.status === 200){
-                            r.json().then((r)=>{
-                                // Le asignamos el id de la respuesta al objeto
-                                objetoTemporal.id = r.id;
-                                const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
-                                arrObjetos.push(nuevoObjeto);
-                                localStorage.setObjects(keyLocalStorage,arrObjetos);
-                                alert("Objeto agregado con exito");
-                                ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
-                                
+        if(tipoObjeto !== "seleccione"){
+            const propiedadesTipo = ObtenerArrayPropiedadesPorTipo(tipoObjeto);
+            // Eliminamos los datos de campos que no correspondan a la clase seleccionada
+            propiedadesObjetoTemporal.forEach((p)=>{
+                if(!propiedadesTipo.includes(p)){
+                    delete objetoTemporal[p];
+                }
+            });
+            if(ValidarCamposInput(objetoTemporal,tipoObjeto)){
+                // Mostramos solo el spinner
+                OcultarCampos([spinner],false);
+                OcultarCampos([cuerpo],true);
+                OcultarCampos([frmLista],true);
+                OcultarCampos([frmABM],true);
+                switch(tipoOperacion){
+                    case "agregar":
+                        // Le eliminamos al objeto temporal el id ya que no se debe pasar en el string
+                        delete objetoTemporal.id;
+                        AgregarObjeto(objetoTemporal)
+                        .then((r)=>{
+                            if(r.status === 200){
+                                r.json().then((r)=>{
+                                    // Le asignamos el id de la respuesta al objeto
+                                    objetoTemporal.id = r.id;
+                                    const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
+                                    arrObjetos.push(nuevoObjeto);
+                                    localStorage.setObjects(keyLocalStorage,arrObjetos);
+                                    alert("Objeto agregado con exito");
+                                    ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
+                                    
+                                });
+                            }else{
+                                throw r;
+                            }
+                        })
+                        .catch(MostrarErrorExito).finally(()=>{
+                                OcultarCampos([spinner],true);
+                                OcultarCampos([cuerpo],false);
+                                OcultarCampos([frmLista],false);
+                                OcultarCampos([frmABM],true);
                             });
-                        }else{
-                            throw r;
-                        }
-                    })
-                    .catch(MostrarErrorExito).finally(()=>{
-                            OcultarCampos([spinner],true);
-                            OcultarCampos([cuerpo],false);
-                            OcultarCampos([frmLista],false);
-                            OcultarCampos([frmABM],true);
-                        });
-                    break;
-                case "eliminar":
-                    EliminarObjeto(objetoTemporal).then((r)=>{
-                        MostrarErrorExito(r);
-                        // Convertimos el objeto temporal al correspondiente
-                        const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
-                        // Buscamos el indice y lo reemplazamos
-                        arrObjetos = arrObjetos.filter((o)=>nuevoObjeto.id !== o.id);
-                        // Actualizamos el local storage, actualizamos la pagina principal y mostramos los campos correspondientes
-                        localStorage.setObjects(keyLocalStorage,arrObjetos);
-                        ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
-                    })
-                    .catch(MostrarErrorExito)
-                    .finally(()=>{
-                        OcultarCampos([spinner],true);
-                        OcultarCampos([cuerpo],false);
-                        OcultarCampos([frmLista],false);
-                        OcultarCampos([frmABM],true);
-                    })
-                    break;
-                case "modificar":
-                        ModificarObjeto(objetoTemporal).then((r)=>{
+                        break;
+                    case "eliminar":
+                        EliminarObjeto(objetoTemporal).then((r)=>{
                             MostrarErrorExito(r);
                             // Convertimos el objeto temporal al correspondiente
                             const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
                             // Buscamos el indice y lo reemplazamos
-                            const indiceObjeto = arrObjetos.findIndex((o)=>nuevoObjeto.id === o.id);
-                            arrObjetos[indiceObjeto] = nuevoObjeto;
+                            arrObjetos = arrObjetos.filter((o)=>nuevoObjeto.id !== o.id);
                             // Actualizamos el local storage, actualizamos la pagina principal y mostramos los campos correspondientes
                             localStorage.setObjects(keyLocalStorage,arrObjetos);
                             ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
@@ -309,12 +293,38 @@ document.addEventListener("DOMContentLoaded",()=>{
                             OcultarCampos([frmLista],false);
                             OcultarCampos([frmABM],true);
                         })
-                    break;
+                        break;
+                    case "modificar":
+                            ModificarObjeto(objetoTemporal).then((r)=>{
+                                MostrarErrorExito(r);
+                                // Convertimos el objeto temporal al correspondiente
+                                const nuevoObjeto = ConvertirEnObjetos([objetoTemporal])[0];
+                                // Buscamos el indice y lo reemplazamos
+                                const indiceObjeto = arrObjetos.findIndex((o)=>nuevoObjeto.id === o.id);
+                                arrObjetos[indiceObjeto] = nuevoObjeto;
+                                // Actualizamos el local storage, actualizamos la pagina principal y mostramos los campos correspondientes
+                                localStorage.setObjects(keyLocalStorage,arrObjetos);
+                                ActualizarTablaPricipal(tabla,propiedades,arrObjetos);
+                            })
+                            .catch(MostrarErrorExito)
+                            .finally(()=>{
+                                OcultarCampos([spinner],true);
+                                OcultarCampos([cuerpo],false);
+                                OcultarCampos([frmLista],false);
+                                OcultarCampos([frmABM],true);
+                            })
+                        break;
+                }
+    
+            }else{
+                alert("Alguno de los datos es erroneo");
             }
 
         }else{
-            alert("Alguno de los datos es erroneo");
+            alert("Debe seleccionar al menos un tipo");
         }
+
+ 
 
     })
 

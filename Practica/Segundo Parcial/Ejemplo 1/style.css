@@ -1,3 +1,98 @@
-.none-visible{
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+#cuerpo {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+/* Estilos para secciones */
+section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para títulos */
+h2, h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    text-align: center; /* Centrar el texto */
+}
+
+/* Estilos para botones */
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos para inputs y labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+select {
+    width: calc(100% - 12px); /* Restar el ancho del padding */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Clases específicas */
+.none-visible {
     display: none;
 }
+
+/* Estilos para spinner */
+#spinnerLoad {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+/* Ocultar secciones por defecto */
+
+/* Estilos específicos para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th {
+    background-color: #f2f2f2; /* Color de fondo para los encabezados */
+    text-align: center;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd; /* Borde para los encabezados */
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd; /* Borde para las celdas */
+}
+
+
