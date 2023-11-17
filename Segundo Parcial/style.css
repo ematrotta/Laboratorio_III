@@ -1,0 +1,97 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+#cuerpo {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+/* Estilos para secciones */
+section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para títulos */
+h2, h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    text-align: center; /* Centrar el texto */
+}
+
+/* Estilos para botones */
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos para inputs y labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.especificFields,input[type="text"],
+select {
+    width: calc(100% - 12px); /* Restar el ancho del padding */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.none-visible {
+    display: none;
+}
+
+/* Estilos para spinner */
+#spinnerLoad {
+    position: fixed;
+    /*Esto fija la posición al borde del 50% de altura y al 50% respecto del borde izquierdo*/
+    top: 50%; 
+    left: 50%;
+    /* Y en este punto divide la posición de la imagen en partes iguales para que quede totalmente centrada */
+    transform: translate(-50%, -50%);
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+
