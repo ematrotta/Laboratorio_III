@@ -1,0 +1,110 @@
+.none-visible{
+    display: none;
+}
+
+/* Resetear estilos predeterminados del navegador */
+body, h1, h2, p, ul, li, form, button {
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 100% del alto de la ventana visible */
+    margin: 0;
+
+}
+
+section {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Estilos para los formularios */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer; /*Se utiliza para cambiar la apariencia del cursor cuando se selecciona*/
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Estilos específicos para la tabla */
+table {
+    width: 100%; /* Hacer que la tabla ocupe el ancho completo del contenedor */
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+th:hover {
+    background-color: #45a049;
+}
+
+/* Estilos específicos para los botones en el formulario de ABM */
+#botonesABM button {
+    margin-right: 10px;
+}
+
+/* Estilos específicos para elementos horizontales en frmPrincipal */
+#filtrosDeColumnas {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; 
+    margin-top: 10px;
+}
+
+/* Estilos específicos para los botones en el formulario de ABM */
+#filtrosDeColumnas input {
+    margin-left: 10px;
+}
+
+form#frmPrincipal {
+    max-width: 100%;
+}

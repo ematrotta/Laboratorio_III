@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="scripts.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>Primer Parcial</title>
+</head>
+<body>
+
+    <section id="sectionFrmPrincipal">
+        <form id="frmPrincipal">
+            <h2>Form Datos</h2>
+            <div>
+                <label for="selecionarTipofrmPrincipal">Filtrar por:</label>
+                <select name="selecionarTipofrmPrincipal" id="selecionarTipofrmPrincipal">
+                    <option value="todos" selected>Todos</option>
+                </select>
+            </div>
+            <div>
+                <label for="txtPromedio" id="lblPromedio">Promedio Edad</label>
+                <input type="text" id="txtPromedio" readonly>
+                <button id="btnCalcular">Calcular</button>
+            </div>
+            <div id="filtrosDeColumnas">
+            </div>
+            <table id="tablaPrincipal"></table>
+            <button id="btnAgregar">Agregar</button>
+        </form>
+    </section>
+    <section id="sectionFrmABM">
+        <form id="frmABM">
+            <h2>Form ABM</h2>
+            <div id="camposPersona">
+                <label for="txt-id" id="lbl-id">ID: </label>
+                <input type="text" id="txt-id" readonly>
+                <label for="txt-nombre" id="lbl-nombre">Nombre: </label>
+                <input type="text" id="txt-nombre">
+                <label for="txt-apellido" id="lbl-apellido">Apellido: </label>
+                <input type="text" id="txt-apellido">
+                <label for="txt-edad" id="lbl-edad">Edad: </label>
+                <input type="text" id="txt-edad">
+                <label for="selecionarTipofrmABM">Tipo:</label>
+                <select name="selecionarTipofrmABM" id="selecionarTipofrmABM">
+                    <option value="todos">Todos</option>
+                </select>
+            </div>
+            <div id="camposSegunTipo">
+                <label for="txt-equipo" id="lbl-equipo">Equipo: </label>
+                <input type="text" id="txt-equipo">
+                <label for="txt-posicion" id="lbl-posicion">Posicion: </label>
+                <input type="text" id="txt-posicion">
+                <label for="txt-cantidadGoles" id="lbl-cantidadGoles">Cantidad de Goles: </label>
+                <input type="text" id="txt-cantidadGoles">
+                <label for="txt-titulo" id="lbl-titulo">Título: </label>
+                <input type="text" id="txt-titulo">
+                <label for="txt-facultad" id="lbl-facultad">Facultad: </label>
+                <input type="text" id="txt-facultad">
+                <label for="txt-añoGraduacion" id="lbl-añoGraduacion">Año de Graduacion: </label>
+                <input type="text" id="txt-añoGraduacion">
+            </div>
+            <div id="botonesABM">
+                <button id="btnAgregarNuevo">Agregar</button>
+                <button id="btnModificarRegistro">Modificar</button>
+                <button id="btnEliminarRegistro">Eliminar</button>
+                <button id="btnCancelarRegistro">Cancelar</button>
+            </div>
+        </form>
+    </section>
+
+</body>
+</html>
