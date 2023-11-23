@@ -243,8 +243,8 @@ document.addEventListener("DOMContentLoaded",()=>{
             if(ValidarCamposInput(objetoTemporal,tipoObjeto)){
                 // Mostramos solo el spinner
                 OcultarCampos([spinner],false);
-                OcultarCampos([cuerpo],false);
-                OcultarCampos([frmLista],false);
+                OcultarCampos([cuerpo],true);
+                OcultarCampos([frmLista],true);
                 OcultarCampos([frmABM],true);
                 switch(tipoOperacion){
                     case "agregar":
